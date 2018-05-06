@@ -40,13 +40,10 @@ class NaiveBayesClassifier(object):
     """Trains the model, takes data in the form of [samples]"""
     def train_unlabeled(self, data, iterations=5):
         og_labeled = dict(self.labeled_samples)
-        last_labels = []
         for it in range(iterations):
             updated = dict(og_labeled)
-            for i in range(data):
-                sample = data[i]
-                label = self.classify(sample)[1]
-                updated[label].append(sample)
+            for sample in data:
+                updated[self.classify(sample)[1]].append(sample)
             self.train_labeled(updated)
 
     def classify(self, observed):
