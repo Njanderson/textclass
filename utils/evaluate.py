@@ -9,7 +9,7 @@ def evaluate_model(model, dev):
         total[label] = len(samples)
         correct[label] = 0
         for sample in samples:
-            predicted_label = model.classify(sample)
+            p, predicted_label = model.classify(sample)
             if predicted_label == label:
                 correct[label] += 1
             else:

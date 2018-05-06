@@ -23,7 +23,10 @@ def evaluate_classifier(classifier):
         label_total = len(dev[label])
         label_num_right = eval[label] * label_total
         print('For label=%s, %d/%d were correctly classified. Accuracy=%f' % (
-        label, label_num_right, label_total, eval[label]))
+                label, label_num_right, label_total, eval[label]))
+        for wrong_label, count in errors[label].items():
+            print('\tFor label=%s, incorrectly classified as %s %d times'
+                % (label, wrong_label, count))
         total += label_total
         num_right += label_num_right
     print('Overall: %d/%d=%f' % (num_right, total, num_right / total))
@@ -32,7 +35,7 @@ if __name__ == '__main__':
     classifier = NaiveBayesClassifier()
     classifier.train_labeled(get_labeled_train())
     evaluate_classifier(classifier)
-    classifier.train_unlabeled(get_unlabeled_train(0.1))
+    classifier.train_unlabeled(get_unlabeled_train(0.2))
     evaluate_classifier(classifier)
 
 

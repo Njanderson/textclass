@@ -36,7 +36,7 @@ def get_dev():
     return get_data(DEV_LABELS, DATA_DIR)
 
 def get_unlabeled_train(percentage=1.0):
-    percentage = max(1.0, percentage)
+    percentage = min(1.0, percentage)
     unlabeled = []
     unlabeled_files = listdir(UNLABELED_DIR)
     for f in unlabeled_files[:floor(percentage*len(unlabeled_files))]:
