@@ -1,6 +1,6 @@
 import sys, os
 sys.path.insert(0, os.path.abspath('..'))
-from utils import loader, transform
+from utils import transform
 from math import log
 from functools import reduce
 

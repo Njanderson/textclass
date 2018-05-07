@@ -1,6 +1,7 @@
 from .loader import get_stopwords
 from re import sub
 
+
 # Converts samples, a list of sample sentences, to a bag of words model
 def to_bag_of_words(samples, remove_stopwords=False):
     counts = {}
@@ -11,4 +12,3 @@ def to_bag_of_words(samples, remove_stopwords=False):
         for word in filtered:
             counts[word] = counts.get(word, 0) + 1
     return counts
-

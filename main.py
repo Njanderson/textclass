@@ -1,5 +1,4 @@
 from utils.loader import *
-from utils.transform import to_bag_of_words
 from model.naive_bayes import NaiveBayesClassifier
 from utils.evaluate import evaluate_model
 import pprint
