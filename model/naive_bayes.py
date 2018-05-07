@@ -24,26 +24,36 @@ class NaiveBayesClassifier(object):
             self.data[label][self.UNKNOWN] = self.SMOOTHING
 
         # Determine p(label)
-        for label in self.data:
-            self.p_label[label] = sum(self.data[label].values())
+        self.p_label = {label: len(self.labeled_samples[label]) for label in self.labeled_samples}
 
         # Re-normalize
-        self.p_label = {label: count / sum(self.p_label.values()) for label, count in self.p_label.items()}
-        # self.p_label = {label: 1.0/len(data) for label, count in self.p_label.items()}
+        num_samples = 0
+        for label, samples in self.labeled_samples.items():
+            num_samples += len(samples)
 
-        self.weights = {}
+        self.p_label = {label: count/num_samples for label, count in self.p_label.items()}
+
         all_words = reduce(lambda x, y: x | y.keys(), self.data.values(), set())
         for word in all_words:
-            occurrences = sum([word in self.data[label] for label in self.data])
-            self.weights[word] = log(1 + len(self.data)/occurrences)
+            occurrences = sum(word in self.data[label] for label in self.data)
+            weight = log(1 + len(self.data)/occurrences)
+            for label in self.data:
+                if word in self.data[label]:
+                    self.data[label][word] *= weight
+
 
     """Trains the model, takes data in the form of [samples]"""
     def train_unlabeled(self, data, iterations=5):
         og_labeled = dict(self.labeled_samples)
         for it in range(iterations):
             updated = dict(og_labeled)
+            max_logs = {}
             for sample in data:
-                updated[self.classify(sample)[1]].append(sample)
+                max_log, label = self.classify(sample)
+                max_logs[max_log] = sample
+                # Update only those we were pretty sure about
+                if max_log > -50:
+                    updated[label].append(sample)
             self.train_labeled(updated)
 
     def classify(self, observed):
@@ -52,16 +62,12 @@ class NaiveBayesClassifier(object):
         for label in self.data:
             p_label_given_data[label] = log(self.p_label[label])
 
-        why_we_won = {}
-
         # Iterate through words, factoring their occurrence into the probability of a category
         for word, count in transform.to_bag_of_words([observed]).items():
-            why_we_won[word] = {}
             for label in self.data:
-                weight = self.weights.get(word, self.weights[self.UNKNOWN])
                 smoothed_data_count = self.data[label].get(word, self.data[label][self.UNKNOWN])
-                p_label_given_data[label] += count * log(weight*smoothed_data_count/len(self.labeled_samples[label]))
-                why_we_won[word][label] = count * log(weight*smoothed_data_count/len(self.labeled_samples[label]))
+                p_label_given_data[label] += count * log(smoothed_data_count/len(self.labeled_samples[label]))
+
         return max(p_label_given_data.values()), max(p_label_given_data, key=lambda k: p_label_given_data[k])
 
     """Resets the history of the model"""

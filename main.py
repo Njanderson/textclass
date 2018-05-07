@@ -35,7 +35,7 @@ if __name__ == '__main__':
     classifier = NaiveBayesClassifier()
     classifier.train_labeled(get_labeled_train())
     evaluate_classifier(classifier)
-    classifier.train_unlabeled(get_unlabeled_train(0.2))
+    classifier.train_unlabeled(get_unlabeled_train(0.5))
     evaluate_classifier(classifier)
 
 
