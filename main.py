@@ -13,7 +13,7 @@ import pprint
 # parser.add_argument("-s", "--seed", dest="seed",
 #                     help="The random seed to be used")
 
-def evaluate_classifier(classifier):
+def evaluate_classifier(classifier, verbose=True):
     dev = get_dev()
     errors, eval = evaluate_model(classifier, dev)
     total = 0
@@ -21,11 +21,12 @@ def evaluate_classifier(classifier):
     for label in sorted(eval, key=lambda k: eval[k]):
         label_total = len(dev[label])
         label_num_right = eval[label] * label_total
-        print('For label=%s, %d/%d were correctly classified. Accuracy=%f' % (
-                label, label_num_right, label_total, eval[label]))
-        for wrong_label, count in errors[label].items():
-            print('\tFor label=%s, incorrectly classified as %s %d times'
-                % (label, wrong_label, count))
+        if verbose:
+            print('For label=%s, %d/%d were correctly classified. Accuracy=%f' % (
+                    label, label_num_right, label_total, eval[label]))
+            for wrong_label, count in errors[label].items():
+                print('\tFor label=%s, incorrectly classified as %s %d times'
+                    % (label, wrong_label, count))
         total += label_total
         num_right += label_num_right
     print('Overall: %d/%d=%f' % (num_right, total, num_right / total))
@@ -33,8 +34,8 @@ def evaluate_classifier(classifier):
 if __name__ == '__main__':
     classifier = NaiveBayesClassifier()
     classifier.train_labeled(get_labeled_train())
-    evaluate_classifier(classifier)
+    evaluate_classifier(classifier, False)
     classifier.train_unlabeled(get_unlabeled_train(0.5))
-    evaluate_classifier(classifier)
+    evaluate_classifier(classifier, False)
 
 
