@@ -35,7 +35,9 @@ if __name__ == '__main__':
     classifier = NaiveBayesClassifier()
     classifier.train_labeled(get_labeled_train())
     evaluate_classifier(classifier, False)
-    classifier.train_unlabeled(get_unlabeled_train(0.5))
-    evaluate_classifier(classifier, False)
+    unlabeled_amounts = [0.1, 0.2, 0.3, 0.5, 0.7, 1.0]
+    for amt in unlabeled_amounts:
+        classifier.train_unlabeled(get_unlabeled_train(amt))
+        evaluate_classifier(classifier, False)
 
 

@@ -20,7 +20,6 @@ def load_labels(file):
         return {split.split('\t')[0]: split.split('\t')[1] for split in split_contents if len(split) > 0}
 
 def get_data(label_loc, data_loc):
-    print('get_data')
     candidate_samples = {}
     for file_name, candidate in load_labels(label_loc).items():
         if candidate not in candidate_samples:
